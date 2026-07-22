@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.2
+
+- Redesigned the picker to work like Linear: a single vertically scrolling list
+  with per-category section headers (all emoji visible by default, not just
+  recents), and the category icons act as quick-jump navigation.
+- Fix: removed the stray horizontal/vertical scrollbars in the category bar
+  (`overflow-x`) — the body now has a single clean vertical scroll and no
+  horizontal overflow.
+
 ## 0.1.1
 
 - Fix: the emoji grid could not be scrolled (the popup was opened with an inline

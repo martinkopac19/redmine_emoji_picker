@@ -8,8 +8,8 @@
   var EMOTICONS = window.REP_EMOTICONS || {};
 
   var active = null;                 // aktívna textarea
-  var pop = null, popSearch = null, popGrid = null, popTabs = null;
-  var curCat = 'smileys', popTa = null;
+  var pop = null, popSearch = null, popTa = null;
+  var popBody = null, popSections = null, popResults = null, popNav = null;
   var ac = null, acTa = null, acStart = 0, acSel = 0, acData = [];
 
   // ---------- utils ----------
@@ -44,77 +44,91 @@
     return starts.concat(contains);
   }
 
-  // ---------- picker popup ----------
+  // ---------- picker popup (Linear-style: jeden zvislý zoznam so sekciami) ----------
   function buildPopup() {
     if (pop) return;
     pop = document.createElement('div'); pop.className = 'rep-pop'; pop.style.display = 'none';
+
     var head = document.createElement('div'); head.className = 'rep-head';
     popSearch = document.createElement('input'); popSearch.type = 'text'; popSearch.className = 'rep-search';
     popSearch.setAttribute('placeholder', 'Search emoji…'); popSearch.setAttribute('autocomplete', 'off');
     head.appendChild(popSearch);
-    popTabs = document.createElement('div'); popTabs.className = 'rep-tabs';
+
+    // navigačné ikony kategórií = rýchly skok (nie filter)
+    popNav = document.createElement('div'); popNav.className = 'rep-nav';
     CATS.forEach(function (c) {
-      var t = document.createElement('button'); t.type = 'button'; t.className = 'rep-tab'; t.textContent = c.icon;
-      t.title = c.name; t.dataset.cat = c.id;
-      t.addEventListener('mousedown', function (ev) { ev.preventDefault(); popSearch.value = ''; curCat = c.id; renderCat(); });
-      popTabs.appendChild(t);
+      if (c.id === 'recent') return;
+      var t = document.createElement('button'); t.type = 'button'; t.className = 'rep-navbtn'; t.textContent = c.icon; t.title = c.name;
+      t.addEventListener('mousedown', function (ev) { ev.preventDefault(); jumpTo(c.id); });
+      popNav.appendChild(t);
     });
-    popGrid = document.createElement('div'); popGrid.className = 'rep-grid';
-    pop.appendChild(head); pop.appendChild(popTabs); pop.appendChild(popGrid);
+
+    popBody = document.createElement('div'); popBody.className = 'rep-body';
+    popSections = document.createElement('div'); popSections.className = 'rep-sections';
+    popResults = document.createElement('div'); popResults.className = 'rep-results rep-grid'; popResults.style.display = 'none';
+    popBody.appendChild(popSections); popBody.appendChild(popResults);
+
+    pop.appendChild(head); pop.appendChild(popNav); pop.appendChild(popBody);
     document.body.appendChild(pop);
 
     popSearch.addEventListener('input', function () {
       var q = popSearch.value.trim();
-      if (q) renderList(searchEmoji(q)); else renderCat();
+      if (q) showResults(searchEmoji(q)); else showSections();
     });
     popSearch.addEventListener('keydown', function (e) { if (e.key === 'Escape') { e.preventDefault(); closePopup(); } });
   }
 
-  function renderCat() {
-    highlightTab();
-    if (curCat === 'recent') {
-      var rc = readRecent();
-      renderList(rc.map(function (c) { return { c: c, n: '' }; }), rc.length ? '' : 'No recent emoji yet');
-      return;
-    }
-    renderList(EMOJI.filter(function (e) { return e.cat === curCat; }));
+  function emojiButton(e) {
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'rep-emoji'; b.textContent = e.c; b.title = e.n || '';
+    b.addEventListener('mousedown', function (ev) { ev.preventDefault(); insertInto(popTa || active, e.c); pushRecent(e.c); });
+    return b;
   }
-  function highlightTab() {
-    if (!popTabs) return;
-    Array.prototype.forEach.call(popTabs.children, function (t) {
-      t.classList.toggle('rep-tab-active', t.dataset.cat === curCat && !popSearch.value.trim());
+  function addSection(id, title, list) {
+    if (!list.length) return;
+    var sec = document.createElement('div'); sec.className = 'rep-sec'; sec.dataset.sec = id;
+    var h = document.createElement('div'); h.className = 'rep-sec-title'; h.textContent = title; sec.appendChild(h);
+    var g = document.createElement('div'); g.className = 'rep-grid';
+    list.forEach(function (e) { g.appendChild(emojiButton(e)); });
+    sec.appendChild(g); popSections.appendChild(sec);
+  }
+  function buildSections() {
+    popSections.textContent = '';
+    var rc = readRecent();
+    if (rc.length) addSection('recent', 'Recently used', rc.map(function (c) { return { c: c, n: '' }; }));
+    CATS.forEach(function (c) {
+      if (c.id === 'recent') return;
+      addSection(c.id, c.name, EMOJI.filter(function (e) { return e.cat === c.id; }));
     });
   }
-  function renderList(list, emptyMsg) {
-    popGrid.textContent = '';
-    if (!list.length) { var em = document.createElement('div'); em.className = 'rep-empty'; em.textContent = emptyMsg || 'No results'; popGrid.appendChild(em); return; }
-    list.forEach(function (e) {
-      var b = document.createElement('button'); b.type = 'button'; b.className = 'rep-emoji'; b.textContent = e.c;
-      b.title = e.n || '';
-      b.addEventListener('mousedown', function (ev) {
-        ev.preventDefault();
-        insertInto(popTa || active, e.c);
-        pushRecent(e.c);
-      });
-      popGrid.appendChild(b);
-    });
+  function showSections() { popResults.style.display = 'none'; popSections.style.display = 'block'; }
+  function showResults(list) {
+    popResults.textContent = '';
+    if (!list.length) { var em = document.createElement('div'); em.className = 'rep-empty'; em.textContent = 'No results'; popResults.appendChild(em); }
+    else list.forEach(function (e) { popResults.appendChild(emojiButton(e)); });
+    popSections.style.display = 'none'; popResults.style.display = 'grid';
+  }
+  function jumpTo(id) {
+    var sec = popSections.querySelector('.rep-sec[data-sec="' + id + '"]');
+    if (!sec) return;
+    popBody.scrollTop += sec.getBoundingClientRect().top - popBody.getBoundingClientRect().top;
   }
 
   function openPicker(ta, anchor) {
     buildPopup();
     popTa = ta; active = ta;
-    pop.style.display = 'flex';   // musí byť flex (nie block), inak sa mriežka nescrolluje
-    curCat = readRecent().length ? 'recent' : 'smileys';
-    popSearch.value = ''; renderCat();
+    buildSections();
+    popSearch.value = ''; showSections();
+    pop.style.display = 'flex';   // musí byť flex (nie block), inak sa telo nescrolluje
     // pozícia pri tlačidle (dokumentové súradnice → popup ide s obsahom pri scrolle)
     var r = anchor.getBoundingClientRect();
     var sx = window.pageXOffset || 0, sy = window.pageYOffset || 0;
-    var w = 300, h = 340;
+    var w = 320, h = 380;
     var vpLeft = Math.max(8, Math.min(r.left, window.innerWidth - w - 8));
     var vpTop = r.bottom + 4;
     if (vpTop + h > window.innerHeight) vpTop = Math.max(8, r.top - h - 4);
     pop.style.left = (vpLeft + sx) + 'px';
     pop.style.top = (vpTop + sy) + 'px';
+    popBody.scrollTop = 0;
     setTimeout(function () { popSearch.focus(); }, 0);
   }
   function closePopup() { if (pop) pop.style.display = 'none'; popTa = null; }
