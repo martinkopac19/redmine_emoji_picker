@@ -18,7 +18,7 @@
 
 /* popup */
 .rep-pop {
-  position: fixed;
+  position: absolute;
   z-index: 10000;
   width: 300px;
   max-height: 340px;
@@ -69,6 +69,8 @@
   gap: 2px;
   padding: 8px;
   overflow-y: auto;
+  flex: 1 1 auto;
+  min-height: 0;      /* nutné, aby sa flex-položka scrollovala namiesto rozťahovania */
 }
 .rep-emoji {
   background: transparent;
@@ -84,7 +86,7 @@
 
 /* `:` autocomplete */
 .rep-ac {
-  position: fixed;
+  position: absolute;
   z-index: 10001;
   min-width: 220px;
   max-height: 240px;

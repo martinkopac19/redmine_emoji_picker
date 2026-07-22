@@ -103,17 +103,18 @@
   function openPicker(ta, anchor) {
     buildPopup();
     popTa = ta; active = ta;
-    pop.style.display = 'block';
+    pop.style.display = 'flex';   // musí byť flex (nie block), inak sa mriežka nescrolluje
     curCat = readRecent().length ? 'recent' : 'smileys';
     popSearch.value = ''; renderCat();
-    // pozícia pri tlačidle, s clampom do viewportu
+    // pozícia pri tlačidle (dokumentové súradnice → popup ide s obsahom pri scrolle)
     var r = anchor.getBoundingClientRect();
+    var sx = window.pageXOffset || 0, sy = window.pageYOffset || 0;
     var w = 300, h = 340;
-    var left = Math.min(r.left, window.innerWidth - w - 8);
-    var top = r.bottom + 4;
-    if (top + h > window.innerHeight) top = Math.max(8, r.top - h - 4);
-    pop.style.left = Math.max(8, left) + 'px';
-    pop.style.top = top + 'px';
+    var vpLeft = Math.max(8, Math.min(r.left, window.innerWidth - w - 8));
+    var vpTop = r.bottom + 4;
+    if (vpTop + h > window.innerHeight) vpTop = Math.max(8, r.top - h - 4);
+    pop.style.left = (vpLeft + sx) + 'px';
+    pop.style.top = (vpTop + sy) + 'px';
     setTimeout(function () { popSearch.focus(); }, 0);
   }
   function closePopup() { if (pop) pop.style.display = 'none'; popTa = null; }
@@ -142,8 +143,9 @@
       ac.appendChild(row);
     });
     var r = ta.getBoundingClientRect();
-    ac.style.left = Math.max(8, r.left) + 'px';
-    ac.style.top = Math.min(r.bottom + 2, window.innerHeight - 8) + 'px';
+    var sx = window.pageXOffset || 0, sy = window.pageYOffset || 0;
+    ac.style.left = (Math.max(8, r.left) + sx) + 'px';
+    ac.style.top = (Math.min(r.bottom + 2, window.innerHeight - 8) + sy) + 'px';
     ac.style.display = 'block';
   }
   function moveAc(d) {
