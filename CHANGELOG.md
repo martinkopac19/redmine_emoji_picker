@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.1
+
+- Fix: vertically center the emoji glyph inside the toolbar button (flex
+  centering) so it lines up with the other jstoolbar icons.
+
 ## 0.2.0
 
 - Ship a Google-style emoji look: bundle the self-hosted **Noto Color Emoji**

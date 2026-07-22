@@ -30,6 +30,16 @@ textarea.wiki-edit,
   vertical-align: middle;
 }
 .rep-btn:hover { filter: brightness(1.1); transform: scale(1.12); }
+/* v jstoolbar: vycentrovať glyf vnútri 24×24 tlačidla (ako sprite susedov).
+   Vyššia špecifickosť (.rep-btn.rep-btn-toolbar) prebije .jstElements button. */
+.rep-btn.rep-btn-toolbar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  font-size: 16px;
+  vertical-align: middle;
+}
 .rep-btn-float {
   display: inline-block;
   margin: 0 0 3px 0;
