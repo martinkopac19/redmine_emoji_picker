@@ -1,5 +1,24 @@
 /* Redmine Emoji Picker (Previo) */
 
+/* Noto Color Emoji (Google Chat štýl) — self-hosted, COLRv1 woff2.
+   Emoji sú Unicode; tento font len zmení ich vzhľad. Latinku font neobsahuje,
+   takže bežný text spadne na ďalší font v poradí (Inter) — text sa nezmení. */
+@font-face {
+  font-family: 'Noto Color Emoji';
+  font-style: normal;
+  font-weight: 400;
+  src: url(../fonts/NotoColorEmoji.woff2) format('woff2');
+  font-display: swap;
+}
+
+/* Emoji font aplikovaný na obsahové polia (editor + vykreslený text),
+   aby emoji vyzerali ako v Google Chate aj mimo pickera. Text ostáva Inter. */
+textarea.wiki-edit,
+.wiki,
+.rep-emoji, .rep-navbtn, .rep-btn, .rep-ac-c {
+  font-family: 'Noto Color Emoji', Inter, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
 /* tlačidlo v jstoolbar / plávajúce */
 .rep-btn {
   background: transparent;

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.0
+
+- Ship a Google-style emoji look: bundle the self-hosted **Noto Color Emoji**
+  web font (COLRv1) and apply it to the picker and to content areas (the editor
+  and rendered text). Emojis keep being plain Unicode — only their appearance
+  changes — so no data changes and it works offline (no external CDN / no
+  Google Fonts request → GDPR-friendly). Text is unaffected (the font has no
+  Latin glyphs, so normal text falls back to the theme font).
+
 ## 0.1.2
 
 - Redesigned the picker to work like Linear: a single vertically scrolling list

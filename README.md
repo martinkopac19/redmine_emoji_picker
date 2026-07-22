@@ -16,6 +16,16 @@ pipeline**. It's a plain plugin: a bit of JavaScript/CSS injected via view
 hooks, with the emoji set **bundled in the plugin** (no external CDN, works
 offline). **No core changes, no migrations** → upgrades stay clean.
 
+### Google-style look (Noto Color Emoji)
+
+To make emoji look like Google Chat instead of the OS default (e.g. Segoe UI
+Emoji on Windows), the plugin bundles the self-hosted **Noto Color Emoji** web
+font (COLRv1) and applies it to the picker and to content areas (`textarea.wiki-edit`
+and rendered `.wiki`). The font is self-hosted (no Google Fonts request →
+GDPR-friendly), emojis stay Unicode, and normal text is unaffected (the font has
+no Latin glyphs, so text falls back to the theme font). Requires a Chromium-based
+browser (Chrome/Edge) for COLRv1; other browsers fall back to the OS emoji font.
+
 ## Requirements
 
 - Redmine **5.0+** (developed and tested on **6.1.3**).
