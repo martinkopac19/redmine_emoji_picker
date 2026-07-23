@@ -10,7 +10,7 @@ Redmine::Plugin.register :redmine_emoji_picker do
   name 'Emoji Picker (Previo)'
   author 'Martin Kopáč'
   description 'Linear-style emoji picker for text fields: toolbar button, : autocomplete and classic emoticon replacement (:D → 😄).'
-  version '0.2.2'
+  version '0.2.3'
   url 'https://github.com/martinkopac19/redmine_emoji_picker'
   requires_redmine version_or_higher: '5.0'
 end

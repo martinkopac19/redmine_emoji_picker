@@ -61,7 +61,21 @@ No database migrations. To update, `git pull` and restart Redmine.
 
 The set and the emoticon map live in
 `assets/javascripts/emoji_data.js` (`window.REP_EMOJI` and
-`window.REP_EMOTICONS`). Add or remove entries there — no build step.
+`window.REP_EMOTICONS`). Add or remove entries there — no build step for the
+picker itself.
+
+Note: the bundled `assets/fonts/NotoColorEmoji.woff2` is **subset to the shipped
+set** (~1 MB instead of ~5.7 MB) to keep first load light. If you add emoji that
+aren't in the subset, they still work (Unicode) but render in the OS emoji font
+in the rendered output. To include new glyphs in the Google-style font, re-subset
+from a full Noto Color Emoji woff2, e.g. with `fonttools`:
+
+```bash
+pyftsubset NotoColorEmoji-full.woff2 --text-file=chars.txt \
+  --output-file=assets/fonts/NotoColorEmoji.woff2 --flavor=woff2 \
+  --layout-features='*' --notdef-glyph --no-hinting
+# chars.txt = every emoji character used in emoji_data.js
+```
 
 ## Privacy
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.3
+
+- Subset the bundled Noto Color Emoji font to the shipped emoji set
+  (~5.7 MB → ~1 MB) to cut first-load weight. Emoji outside the bundled set fall
+  back to the OS emoji font in rendered content; if you extend
+  `assets/javascripts/emoji_data.js`, re-run the subset command (see README) so
+  the new glyphs are covered.
+
 ## 0.2.2
 
 - Fix: content text looked stretched/too wide. The emoji font was first in the
