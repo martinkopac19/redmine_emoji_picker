@@ -11,12 +11,18 @@
   font-display: swap;
 }
 
-/* Emoji font aplikovaný na obsahové polia (editor + vykreslený text),
-   aby emoji vyzerali ako v Google Chate aj mimo pickera. Text ostáva Inter. */
+/* Obsahové polia (editor + vykreslený text): emoji font musí byť POSLEDNÝ,
+   inak ním prehliadač kreslí aj číslice/symboly (Noto ich má kvôli keycap
+   emoji) → roztiahnutý text. Takto text/čísla vykreslí Inter a len skutočné
+   emoji spadnú na Noto → Google vzhľad ostáva. */
 textarea.wiki-edit,
-.wiki,
+.wiki {
+  font-family: Inter, -apple-system, "Segoe UI", Roboto, Arial, "Noto Color Emoji", sans-serif;
+}
+
+/* Picker (bunky obsahujú len emoji): emoji font PRVÝ. */
 .rep-emoji, .rep-navbtn, .rep-btn, .rep-ac-c {
-  font-family: 'Noto Color Emoji', Inter, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-family: 'Noto Color Emoji', "Segoe UI Emoji", "Apple Color Emoji", sans-serif;
 }
 
 /* tlačidlo v jstoolbar / plávajúce */

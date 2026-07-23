@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.2
+
+- Fix: content text looked stretched/too wide. The emoji font was first in the
+  `font-family` for content areas, so the browser drew normal characters
+  (digits `0-9`, `#`, `*` — Noto Color Emoji ships those for keycap emoji) with
+  the wide emoji font. The emoji font is now **last** in the content stack, so
+  text/digits use the theme font and only real emoji fall back to Noto (Google
+  look preserved). The picker keeps the emoji font first.
+
 ## 0.2.1
 
 - Fix: vertically center the emoji glyph inside the toolbar button (flex
